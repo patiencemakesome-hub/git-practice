@@ -1,4 +1,3 @@
-cat > .github/workflows/hello.yml << 'EOF'
 name: Shell Command
 
 on: workflow_dispatch
@@ -7,6 +6,7 @@ jobs:
   run:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: Check environment
         run: |
           echo "Current directory:"
