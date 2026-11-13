@@ -1,0 +1,44 @@
+name: Expression
+
+on: workflow_dispatch
+
+env:
+  FRUITS: '[{"name":"apple","price":100},{"name":"banana","price":200}]'
+
+jobs:
+  expr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Literal and operator
+        run: |
+          echo "bool: ${{ true }}"
+          echo "null: '${{ null }}'"
+          echo "compare: ${{ 5 >= 3 && !false }}"
+          echo "true == 1: ${{ true == 1 }}"
+      - name: Object filter
+        run: |
+          echo "first: ${{ fromJSON(env.FRUITS)[0].name }}"
+          echo "all names: ${{ join(fromJSON(env.FRUITS).*.name, ', ') }}"
+          echo "all prices: ${{ join(fromJSON(env.FRUITS).*.price, ', ') }}"
+      - name: Functions
+        run: |
+          echo "contains: ${{ contains('Hello GitHub', 'Git') }}"
+          echo "startsWith: ${{ startsWith('Hello GitHub', 'Hello') }}"
+          echo "endsWith: ${{ endsWith('Hello GitHub', 'Hub') }}"
+          echo "format: ${{ format('Hi {0}, run {1}', github.actor, github.run_number) }}"
+      - name: Print Hello
+        if: ${{ contains(github.run_id, '1') }}
+        run: echo "Hello (run_id contains 1)"
+      - name: Print Goodbye
+        run: echo "Goodbye (run_id has no 1)"
+        if: ${{ !contains(github.run_id, '1') }}
+      - name: Fail on purpose
+        run: exit 1
+      - name: Skipped after failure
+        run: echo "skipped"
+      - name: Runs on failure
+        if: ${{ failure() }}
+        run: echo "failure() is true"
+      - name: Always runs
+        if: ${{ always() }}
+        run: echo "always() runs"

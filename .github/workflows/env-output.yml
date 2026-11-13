@@ -1,0 +1,27 @@
+name: Env Output
+
+on: workflow_dispatch
+
+jobs:
+  first:
+    runs-on: ubuntu-latest
+    outputs:
+      result: ${{ steps.calc.outputs.RESULT }}
+    steps:
+      - name: Set GITHUB_ENV
+        run: echo "MY_ENV=from-github-env" >> "$GITHUB_ENV"
+      - name: Read GITHUB_ENV
+        run: echo "MY_ENV is $MY_ENV"
+      - name: Set GITHUB_OUTPUT
+        id: calc
+        run: echo "RESULT=done-$(date +%s)" >> "$GITHUB_OUTPUT"
+      - name: Read GITHUB_OUTPUT
+        run: echo "RESULT is ${{ steps.calc.outputs.RESULT }}"
+  second:
+    needs: first
+    runs-on: ubuntu-latest
+    steps:
+      - name: Read output from other job
+        run: echo "From first job ${{ needs.first.outputs.result }}"
+      - name: GITHUB_ENV does not carry over
+        run: echo "MY_ENV in second job = '$MY_ENV'"
