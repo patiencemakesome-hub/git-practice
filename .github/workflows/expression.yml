@@ -26,6 +26,7 @@ jobs:
           echo "startsWith: ${{ startsWith('Hello GitHub', 'Hello') }}"
           echo "endsWith: ${{ endsWith('Hello GitHub', 'Hub') }}"
           echo "format: ${{ format('Hi {0}, run {1}', github.actor, github.run_number) }}"
+          echo "toJSON: ${{ toJSON(runner.os) }}"
       - name: Print Hello
         if: ${{ contains(github.run_id, '1') }}
         run: echo "Hello (run_id contains 1)"
@@ -35,7 +36,7 @@ jobs:
       - name: Fail on purpose
         run: exit 1
       - name: Skipped after failure
-        run: echo "skipped"
+        run: echo "이 스텝은 건너뜀"
       - name: Runs on failure
         if: ${{ failure() }}
         run: echo "failure() is true"
